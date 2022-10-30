@@ -46,8 +46,16 @@ class PostReview(models.Model):
         IGNORE = 'ignore'
         DELETE = 'delete'
         
-    reviewer = models.ForeignKey(Reviewer, on_delete=models.CASCADE)
-    job = models.ForeignKey(PostReviewJob, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(
+        Reviewer, 
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    job = models.ForeignKey(
+        PostReviewJob, 
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
     decision = models.CharField(
         max_length=50,
         choices=Decision.choices,
@@ -103,14 +111,13 @@ class Condition(rule_models.Condition):
     def is_satisfied(self, target: PostReview):
         match self.property:
             case __class__.Choices.IS_NTH_REVIEW:
-                n = int(self.value)
-                review_count = target.job.post_review_set.count()
-                return n == review_count
+                n = int(self.value)                
+                return n == target.job.reviews.count()
             case __class__.Choices.DECISION_IS:
                 decision = PostReview.Decision(self.value)
                 return target.decision == decision
             case __class__.Choices.ALL_DECISIONS_MATCH:
-                raise NotImplementedError("Haven't implemented ALL_DECISIONS_MATCH yet...")
+                return 1 >= target.job.reviews.values('decision').distinct().count()
             
     def __str__(self):
         return f"{self.property}: {self.value}"

@@ -10,7 +10,7 @@ from . import models
 """
 @receiver(post_save, sender=models.PostReview)
 def _send_review_completed(sender, instance, **kwargs):
-    signals.review_completed.send(sender=sender, review=instance)
+    signals.review_completed.send(sender=sender, instance=instance)
     print("Send review_completed signal")
     
     
@@ -18,26 +18,39 @@ def _send_review_completed(sender, instance, **kwargs):
     Todo: make this a singleton class
 """
 class ReviewRuleEngine:
-    __signals = None
+    __known_triggers = None
     
     def __init__(self):
-        trigger_pks = list(models.ReviewRule.objects.values('trigger').distinct())
-        triggers = [models.Trigger.objects.get(pk=trigger_pk['trigger']) for trigger_pk in trigger_pks]
-        print(triggers)
-        self.__signals = [trigger.get_signal() for trigger in triggers]
-        for signal in self.__signals:
-            signal.connect(self.__handle_trigger)
-            
-        post_save.connect(self.register_new_rule)
+        """
+            Note: we have to do the group by list in python because django doesn't provide a list aggregation. 
+            If we were using Postgres, we could do it in the query with an ArrayAgg...
+        """
+        self.__known_triggers = {value['trigger'] for value in models.ReviewRule.objects.values('trigger').distinct()}
+        triggers = [models.Trigger.objects.get(pk=trigger_pk) for trigger_pk in self.__known_triggers]
+        print(triggers)        
+        for trigger in triggers:            
+            self.__register_trigger(trigger)
+        post_save.connect(self.register_new_rule, sender=models.ReviewRule, weak=False)
         
-    def __handle_trigger(self, sender, **kwargs):
+    def __handle_trigger(self, trigger: models.Trigger, sender, instance, **kwargs):
         print(sender)
-        raise NotImplementedError("Haven't implemented trigger handling in the rule engine yet!")
+        print(instance)
+        for rule in models.ReviewRule.objects.filter(trigger=trigger):
+            print(f"about to run {rule}")
+            rule.run_rule(instance)
+            print(f"just ran rule {rule}")
+    
+    def __register_trigger(self, trigger: models.Trigger):
+        print(f"registering trigger {trigger}")
+        # todo: get the sender from the trigger itself
+        trigger.get_signal().connect(
+            lambda sender, instance, **kwargs: self.__handle_trigger(trigger, sender, instance, **kwargs), 
+            sender=models.PostReview, 
+        weak=False)
         
-    def register_new_rule(self, rule: models.ReviewRule, **kwargs):
-        new_signal = rule.trigger.get_signal()
-        if new_signal not in self.__signals:
-            self.__signals += new_signal
-            new_signal.connect(self.__handle_trigger)                    
+    def register_new_rule(self, rule: models.ReviewRule, **kwargs):                
+        if rule.trigger not in self.__known_triggers:
+            self.__register_trigger(rule.trigger)            
+        self.__known_triggers += rule.trigger
 
     
