@@ -14,6 +14,9 @@ class Post(models.Model):
         max_length=50,
         choices=State.choices
     )
+    
+    def __str__(self):
+        return f"{self.pk} ({self.state})"
 
 class PostReviewJob(models.Model):
     class State(models.TextChoices):
@@ -26,10 +29,16 @@ class PostReviewJob(models.Model):
         max_length=50,
         choices=State.choices
     )
+    
+    def __str__(self):
+        return f"{self.post} - {self.status}"
 
 
 class Reviewer(models.Model):
     name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
     
 class PostReview(models.Model):
     class Decision(models.TextChoices):
@@ -43,6 +52,9 @@ class PostReview(models.Model):
         choices=Decision.choices,
     )
     
+    def __str__(self):
+        return f"job {self.job.pk} - {self.reviewer} - {self.decision}"
+    
 """
     Set up rule engine to run over the review objects
 """
@@ -55,6 +67,9 @@ class Trigger(rule_models.Trigger):
     
     def register(self):
         pass
+    
+    def __str__(self):
+        return f"{self.trigger_name} ON {self.sender}"
     
 class Condition(rule_models.Condition):
     class Choices(models.TextChoices):
@@ -84,6 +99,9 @@ class Condition(rule_models.Condition):
                 return target.decision == decision
             case __class__.Choices.ALL_DECISIONS_MATCH:
                 raise NotImplementedError("Haven't implemented ALL_DECISIONS_MATCH yet...")
+            
+    def __str__(self):
+        return f"{self.property}: {self.value}"
                 
     
 class Effect(rule_models.Effect):
@@ -111,5 +129,9 @@ class Effect(rule_models.Effect):
             case __class__.Choices.NOTHING:
                 pass
             
+    def __str__(self):
+        return self.name
+            
 class ReviewRule(rule_models.Rule):
-    pass
+    def __str__(self):
+        return f"WHENEVER [{self.trigger}] IF [{self.condition}] DO [{self.effect}]"
