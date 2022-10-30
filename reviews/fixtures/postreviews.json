@@ -1,0 +1,47 @@
+[
+    {
+      "model": "reviews.postreview",
+      "pk": 1,
+      "fields": {
+        "reviewer": 1,
+        "job": 1,
+        "decision": "ignore"
+      }
+    },
+    {
+        "model": "reviews.postreview",
+        "pk": 2,
+        "fields": {
+          "reviewer": 2,
+          "job": 1,
+          "decision": "ignore"
+        }
+    },
+    {
+        "model": "reviews.postreview",
+        "pk": 3,
+        "fields": {
+          "reviewer": 3,
+          "job": 2,
+          "decision": "ignore"
+        }
+    },
+    {
+        "model": "reviews.postreview",
+        "pk": 4,
+        "fields": {
+          "reviewer": 1,
+          "job": 2,
+          "decision": "delete"
+        }
+    },
+    {
+        "model": "reviews.postreview",
+        "pk": 5,
+        "fields": {
+          "reviewer": 2,
+          "job": 3,
+          "decision": "ignore"
+        }
+    }
+]

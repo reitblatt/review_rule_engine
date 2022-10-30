@@ -1,0 +1,23 @@
+[
+    {
+      "model": "reviews.reviewer",
+      "pk": 1,
+      "fields": {
+        "name": "alice"
+      }
+    },
+    {        
+        "model": "reviews.reviewer",
+        "pk": 2,
+        "fields": {
+            "name": "bob"
+        }
+    },
+    {
+        "model": "reviews.reviewer",
+        "pk": 3,
+        "fields": {
+            "name": "eve"
+        }
+    }    
+]
