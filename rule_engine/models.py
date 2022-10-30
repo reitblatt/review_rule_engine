@@ -26,9 +26,9 @@ class Effect(models.Model):
         raise NotImplementedError(f"Subclasses of {__class__} must implement {self.__func__.__name__}")
         
 class Rule(models.Model):
-    trigger = models.ForeignKey(Trigger, on_delete=models.CASCADE)
-    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
-    effect = models.ForeignKey(Effect, on_delete=models.CASCADE)
+    trigger = models.ForeignKey('Trigger', on_delete=models.CASCADE)
+    condition = models.ForeignKey('Condition', on_delete=models.CASCADE)
+    effect = models.ForeignKey('Effect', on_delete=models.CASCADE)
     
     class Meta:
         abstract = True
