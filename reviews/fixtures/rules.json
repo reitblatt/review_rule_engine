@@ -1,0 +1,20 @@
+[
+    {
+      "model": "reviews.reviewrule",
+      "pk": 1,
+      "fields": {
+        "trigger": 1,
+        "condition": 1,
+        "effect": 3
+      }
+    },
+    {
+        "model": "reviews.reviewrule",
+        "pk": 2,
+        "fields": {
+          "trigger": 1,
+          "condition": 2,
+          "effect": 1
+        }
+    }
+]

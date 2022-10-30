@@ -1,0 +1,18 @@
+[
+    {
+      "model": "reviews.condition",
+      "pk": 1,
+      "fields": {
+        "property": "is_nth_review",
+        "value": 1
+      }
+    },
+    {
+        "model": "reviews.condition",
+        "pk": 2,
+        "fields": {
+          "property": "is_nth_review",
+          "value": 2
+        }
+    }
+]

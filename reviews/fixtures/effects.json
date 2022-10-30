@@ -1,0 +1,23 @@
+[
+    {
+      "model": "reviews.effect",
+      "pk": 1,
+      "fields": {
+        "name": "close_job"
+      }
+    },
+    {
+        "model": "reviews.effect",
+        "pk": 2,
+        "fields": {
+          "name": "delete_and_close"
+        }
+    },
+    {
+        "model": "reviews.effect",
+        "pk": 3,
+        "fields": {
+          "name": "nothing"
+        }
+    }
+]
