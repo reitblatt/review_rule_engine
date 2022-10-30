@@ -1,5 +1,6 @@
 from django.db import models
 from rule_engine import models as rule_models
+from . import signals
 
 """
     To demonstrate the rule engine, we build a simple review system over a basic 'post' object.
@@ -62,11 +63,22 @@ class PostReview(models.Model):
 RuleTarget = PostReview
 
 class Trigger(rule_models.Trigger):
-    trigger_name = models.CharField(max_length=200, unique=True)
+    class Choice(models.TextChoices):
+        ON_REVIEW_CREATE = 'on_review_create'
+        
+    trigger_name = models.CharField(
+        max_length=200,
+        choices=Choice.choices
+    )
     sender = models.CharField(max_length=200)
     
-    def register(self):
-        pass
+    def get_signal(self):
+        match self.trigger_name.lower():
+            case __class__.Choice.ON_REVIEW_CREATE:
+                print("matched CREATE trigger")
+                return signals.review_completed
+            case default:
+                print(f"unknown trigger {self.trigger_name}")
     
     def __str__(self):
         return f"{self.trigger_name} ON {self.sender}"

@@ -9,6 +9,6 @@ def handle_run_rule_engine(sender, target: models.RuleTarget, trigger: models.Tr
     print(rules.values())
     print(f"received run_rule_engine signal: {sender}")    
     for rule in rules:
-        rule.run_rule(target)        
+        rule.run_rule(target)
     
 
