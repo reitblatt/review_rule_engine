@@ -81,7 +81,7 @@ class Trigger(rule_models.Trigger):
     sender = models.CharField(max_length=200)
     
     def get_signal(self):
-        match self.trigger_name.lower():
+        match self.trigger_name:
             case __class__.Choice.ON_REVIEW_CREATE:
                 print("matched CREATE trigger")
                 return signals.review_completed

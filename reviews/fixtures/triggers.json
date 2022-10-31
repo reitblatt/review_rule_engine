@@ -3,7 +3,7 @@
       "model": "reviews.trigger",
       "pk": 1,
       "fields": {
-        "trigger_name": "ON_REVIEW_CREATE",
+        "trigger_name": "on_review_create",
         "sender": "PostReview"
       }
     }
