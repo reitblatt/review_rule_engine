@@ -44,6 +44,3 @@ class Rule(models.Model):
     def run_rule(self, target: RuleTarget):
         if (self.condition.is_satisfied(target)):
             self.effect.perform_effect(target)
-
-    def register(self):
-        self.trigger.register()
