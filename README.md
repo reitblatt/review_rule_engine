@@ -89,3 +89,14 @@ Effects are what happens after your rule runs (and the condition is satisfied). 
 
 - Changing the state of the RuleTarget
 - Updating a counter (watch out for loops if updating a counter is a Trigger!)
+
+## Rule
+This ties together a trigger, a condition, and an effect. It can be a trivial instantiation of `Rule`.
+
+## RuleEngine
+
+To put it all together and actually run the rules, you will need to instantiate the RuleEngine class somewhere in your application, passing in the Rule, e.g.:
+
+```rule_engine.RuleEngine(RuleClass=models.ReviewRule)```
+
+And now it will be running in the background!

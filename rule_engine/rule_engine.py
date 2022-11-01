@@ -10,16 +10,14 @@ from . import models
 class RuleEngine:
     __known_triggers = None
     __rule_class = None
-    __trigger_class = None
 
-    def __init__(self, RuleClass: type[models.Rule], TriggerClass: type[models.Trigger]):
+    def __init__(self, RuleClass: type[models.Rule]):
         """
             Note: we have to do the group by list in python because django doesn't provide a list aggregation. 
             If we were using Postgres, we could do it in the query with an ArrayAgg...
         """
         self.__rule_class = RuleClass
-        self.__trigger_class = TriggerClass
-        print(self.__trigger_class)
+        TriggerClass = RuleClass._meta.get_field('trigger').remote_field.model
         self.__known_triggers = {
             value['trigger'] for value in RuleClass.objects.values('trigger').distinct()}
         triggers = [TriggerClass.objects.get(

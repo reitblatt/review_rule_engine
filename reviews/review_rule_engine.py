@@ -9,9 +9,12 @@ from . import models
     as this signal doesn't trigger for every review creation event (e.g. bulk creates). This is a cornercase
     that would have to be handled correctly in a real application.
 """
+
+
 @receiver(post_save, sender=models.PostReview)
 def _send_review_completed(sender, instance, **kwargs):
     signals.review_completed.send(sender=sender, instance=instance)
     print("Send review_completed signal")
-    
-rule_engine.RuleEngine(RuleClass=models.ReviewRule, TriggerClass=models.Trigger)
+
+
+rule_engine.RuleEngine(RuleClass=models.ReviewRule)
