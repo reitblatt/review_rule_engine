@@ -15,6 +15,22 @@ class ComponentsBaseTestCase(TestCase):
         abstract = True
 
 
+class TriggerTestCase(ComponentsBaseTestCase):
+
+    def test_trigger_on_create(self):
+        trigger = Trigger.objects.create(
+            trigger_name=Trigger.Choice.ON_REVIEW_CREATE
+        )
+        callback = mock.MagicMock()
+        trigger.register(callback)
+        review = PostReview.objects.create(
+            job=self.job,
+            reviewer=self.reviewer,
+            decision=PostReview.Decision.IGNORE
+        )
+        callback.assert_called_with(target=review)
+
+
 class ConditionTestCase(ComponentsBaseTestCase):
 
     def test_is_first_review(self):
