@@ -4,10 +4,11 @@ This is an exploration of what a basic rule engine might look like in Django. It
 
 I haven't wrapped it as a library yet, and include a demo app based on a simple human review application.
 
-In a future iteration, we might add:
+Potential elaborations could be:
 - instrumentation for simpler trigger, condition, effect creation
 - a basic condition language
 - a rule UI
+- standard Pythonic wrappers (e.g. make Effect and Condition callables)
 
 # Installation instructions
 
@@ -67,6 +68,8 @@ The bones of the rule execution engine is in `rule_engine.rule_engine.RuleEngine
 
 To use it, you need to provide instantiations for each of the base models (`Rule` can be trivial).
 
+Again, this is very barebones. Rule Engines in general can be sources of extreme complexity (they quick evolve into Turing Complete systems with basic arithmetic), so be careful!
+
 ## Trigger
 Triggers define the the events that should cause your rule to run. Examples of triggers might be:
 
@@ -74,6 +77,15 @@ Triggers define the the events that should cause your rule to run. Examples of t
 - Updates to an object
 - An HttpRequest (think about the QPS first!)
 
-We require that triggers be represented by Django signals (you can use the same signal for multiple triggers).
+You can use whatever framework you want for triggers, but the simplest is just to wrap Django signals. Triggers need to implement the `register()` method, which should trigger the passed in callback function whenever the trigger fires.
 
-Triggers need to implement the `get_signal()` and `register()` methods.
+## Condition
+Conditions define whether a rule is satisfied. For example, if your Rule was targeting an Animal object, you might have a condition for `has_a_tail`. Even though conditions are evaluated over single objects, you can make stateful rules that depend upon the database, e.g. have a condition `is_first_of_its_kind`.
+
+Conditions are usually a source of high complexity in a rule engine, so think carefully about your design. The only requirement your rule model has is that it must implement the `is_satisfied` method.
+
+## Effect
+Effects are what happens after your rule runs (and the condition is satisfied). Example effects might be:
+
+- Changing the state of the RuleTarget
+- Updating a counter (watch out for loops if updating a counter is a Trigger!)
