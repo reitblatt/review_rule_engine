@@ -20,6 +20,7 @@ Run `git clone https://github.com/reitblatt/review_rule_engine`
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+npm install
 ```
 
 Run the initial data migration:
@@ -40,7 +41,10 @@ python manage.py runserver
 
 # Playing with it
 
-Currently there is no UI, so you'll have to view the rules via the admin UI. You can set up an adminuser with:
+There is a basic UI for viewing the current rules. Start up with:
+`npm start`
+
+Currently the UI is read-only, so you'll have to create/modify the rules via the admin UI. You can set up an adminuser with:
 ```
 python manage.py createsuperuser
 ```
