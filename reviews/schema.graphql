@@ -1,0 +1,35 @@
+
+type Query {
+  rules: [ReviewRule!]!
+}
+
+"""Condition(id, property, value)"""
+type ReviewCondition {
+  id: ID!
+  property: String!
+  value: String
+}
+
+"""Effect(id, name)"""
+type ReviewEffect {
+  id: ID!
+  name: String!
+}
+
+"""
+ReviewRule(id, trigger, condition, effect, success_count, failure_count)
+"""
+type ReviewRule {
+  id: ID!
+  trigger: ReviewTrigger!
+  condition: ReviewCondition!
+  effect: ReviewEffect!
+  successCount: Int!
+  failureCount: Int!
+}
+
+"""Trigger(id, trigger_name, sender)"""
+type ReviewTrigger {
+  id: ID!
+  triggerName: String!
+}
