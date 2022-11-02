@@ -37,7 +37,16 @@ const allReviewRulesQueryDocument = graphql(/* GraphQL */ `
       id
       trigger {
         triggerName
-      }      
+      }
+      condition {
+        property
+        value
+      }
+      effect {
+        name
+      }
+      successCount
+      failureCount
       ...ReviewRuleItem  
     }
   }
@@ -55,10 +64,21 @@ const ReviewRuleTable = (props: {}) => {
             <tr>
                 <th>ID</th>
                 <th>Trigger</th>
+                <th>Condition</th>
+                <th>Effect</th>
+                <th>Successes</th>
+                <th>Failures</th>
             </tr>
         </thead>
         <tbody>
-            {rules.map(e => e && <tr><td>{e.id}</td><td>{e.trigger.triggerName}</td></tr>)}
+            {rules.map(e => e && <tr>
+                <td>{e.id}</td>
+                <td>{e.trigger.triggerName}</td>
+                <td>{e.condition.property}: {e.condition.value}</td>
+                <td>{e.effect.name}</td>
+                <td>{e.successCount}</td>
+                <td>{e.failureCount}</td>
+            </tr>)}
         </tbody>
     </Table>
     )
