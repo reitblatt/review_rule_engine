@@ -1,0 +1,1 @@
+import { useReviewRuleListQuery } from "../api/graphql/gen";
