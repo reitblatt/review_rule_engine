@@ -128,32 +128,33 @@ class RuleTestCase(TestCase):
     def test_is_first_review(self):
         first_review_rule = ReviewRule.objects.all().filter(
             condition__property='is_nth_review').filter(condition__value=1).first()
-        first_review_rule.effect.perform_effect = mock.Mock(
-            side_effect=Exception('ran the effect!'))
+        effect_mock = mock.MagicMock()
+        first_review_rule.effect.perform_effect = effect_mock
         review = PostReview.objects.create(
             job=self.job, decision=PostReview.Decision.IGNORE, reviewer=self.reviewer)
-        self.assertRaises(
-            Exception, lambda: first_review_rule.run_rule(review))
+        first_review_rule.run_rule(review)
+        effect_mock.assert_called()
 
     def test_is_not_first_review(self):
         first_review_rule = ReviewRule.objects.all().filter(
             condition__property='is_nth_review').filter(condition__value=1).first()
-        first_review_rule.effect.perform_effect = mock.Mock(
-            side_effect=Exception('ran the effect!'))
+        effect_mock = mock.MagicMock()
+        first_review_rule.effect.perform_effect = effect_mock
         review1 = PostReview.objects.create(
             job=self.job, decision=PostReview.Decision.IGNORE, reviewer=self.reviewer)
         review2 = PostReview.objects.create(
             job=self.job, decision=PostReview.Decision.IGNORE, reviewer=self.reviewer)
         first_review_rule.run_rule(review2)
+        effect_mock.assert_not_called()
 
     def test_is_second_review(self):
         review_rule = ReviewRule.objects.all().filter(
             condition__property='is_nth_review').filter(condition__value=2).first()
-        review_rule.effect.perform_effect = mock.Mock(
-            side_effect=Exception('ran the effect!'))
+        effect_mock = mock.MagicMock()
+        review_rule.effect.perform_effect = effect_mock
         review1 = PostReview.objects.create(
             job=self.job, decision=PostReview.Decision.IGNORE, reviewer=self.reviewer)
         review2 = PostReview.objects.create(
             job=self.job, decision=PostReview.Decision.IGNORE, reviewer=self.reviewer)
-        self.assertRaises(
-            Exception, lambda: review_rule.run_rule(review2))
+        review_rule.run_rule(review2)
+        effect_mock.assert_called_with(review2)
