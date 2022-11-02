@@ -22,21 +22,16 @@ class RuleEngine:
             value['trigger'] for value in RuleClass.objects.values('trigger').distinct()}
         triggers = [TriggerClass.objects.get(
             pk=trigger_pk) for trigger_pk in self.__known_triggers]
-        print(triggers)
         for trigger in triggers:
             self.__register_trigger(trigger)
         post_save.connect(self.register_new_rule,
                           sender=models.Rule, weak=False)
 
     def __handle_trigger(self, trigger: models.Trigger, target):
-        print(target)
         for rule in self.__rule_class.objects.filter(trigger=trigger):
-            print(f"about to run {rule}")
             rule.run_rule(target)
-            print(f"just ran rule {rule}")
 
     def __register_trigger(self, trigger: models.Trigger):
-        print(f"registering trigger {trigger}")
         # todo: get the sender from the trigger itself
         trigger.register(lambda target:
                          self.__handle_trigger(trigger, target))

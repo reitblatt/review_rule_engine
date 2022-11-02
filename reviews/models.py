@@ -1,3 +1,4 @@
+from doctest import UnexpectedException
 from django.db import models
 from rule_engine import models as rule_models
 from . import signals
@@ -93,10 +94,7 @@ class Trigger(rule_models.Trigger):
     def _get_signal(self):
         match self.trigger_name:
             case __class__.Choice.ON_REVIEW_CREATE:
-                print("matched CREATE trigger")
                 return signals.review_completed
-            case default:
-                print(f"unknown trigger {self.trigger_name}")
 
     def __str__(self):
         return f"{self.trigger_name} ON {self.sender}"

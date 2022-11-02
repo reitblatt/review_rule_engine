@@ -14,7 +14,6 @@ from . import models
 @receiver(post_save, sender=models.PostReview)
 def _send_review_completed(sender, instance, **kwargs):
     signals.review_completed.send(sender=sender, instance=instance)
-    print("Send review_completed signal")
 
 
 rule_engine.RuleEngine(RuleClass=models.ReviewRule)
