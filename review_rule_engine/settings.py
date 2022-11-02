@@ -25,8 +25,23 @@ SECRET_KEY = 'django-insecure-pf*azq0)@+*2$f^e88=#$l_^ari)d$_z@(6i!=boc0*4z3kxcj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Cors Settings
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://127.0.0.1:3000",
+]
 
 # Application definition
 
@@ -40,9 +55,11 @@ INSTALLED_APPS = [
     'strawberry.django',
     'rule_engine',
     'reviews',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
